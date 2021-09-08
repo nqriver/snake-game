@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// TODO:
-// poprawic koordynaty kolizji
-// poprawic warunek kolizji z cialem weza
-// poprawic pojawianie sie jablka
 public class Snake {
 
     private List<Point> body;
@@ -41,12 +37,16 @@ public class Snake {
         return body.get(0);
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
     public Direction getDirection() {
         return direction;
+    }
+
+    public int getSize() {
+        return body.size();
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
 
@@ -61,11 +61,9 @@ public class Snake {
                 Board.CELL_SIZE, Board.CELL_SIZE);
     }
 
+
     void move() {
         tailTip.setLocation(body.get(body.size()-1));
-//        for (int i = 1; i < body.size() -1 ; i++) {
-//            body.get(i).setLocation(body.get(i-1));
-//        }
         for (int i = body.size()-1; i>0; i--) {
             body.get(i).setLocation(body.get(i-1));
         }
@@ -89,6 +87,7 @@ public class Snake {
         }
         return head.x == 0 || head.x == Board.X_FIELDS - 1 || head.y == 0 || head.y == Board.Y_FIELDS - 1;
     }
+
 
     public boolean eatFood(Food food) {
         if (getHead().equals(food)) {

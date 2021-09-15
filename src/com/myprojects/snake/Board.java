@@ -16,7 +16,7 @@ public class Board {
     private static BufferedImage background;
     static {
         try {
-            background = ImageIO.read(new File("resources/background_3.jpg"));
+            background = ImageIO.read(new File("resources/background_1.jpg"));
         }
         catch (IOException e) {
             e.printStackTrace();

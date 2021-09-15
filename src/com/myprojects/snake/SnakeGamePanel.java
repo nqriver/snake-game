@@ -7,14 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+
 public class SnakeGamePanel extends JPanel {
 
-    Snake snake = new Snake();
-    Food food = new Food(snake);
+    private GameManager gameManager = new GameManager();
+    private JLabel score;
 
 
     SnakeGamePanel() {
         setPreferredSize(new Dimension(Board.WIDTH, Board.HEIGHT));
+        score = new JLabel("Score: ", SwingConstants.CENTER);
+        score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 30));
+        add(score, BorderLayout.NORTH);
         GameTimer timer = new GameTimer();
         timer.start();
         addBindings();
@@ -39,21 +43,24 @@ public class SnakeGamePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-        Board.draw(graphics);
-        snake.draw(graphics);
-        food.draw(graphics);
+        super.paintComponent(graphics);
+        Graphics2D g2d = (Graphics2D)graphics;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        gameManager.renderGraphics(g2d);
+        score.setText(gameManager.setScoreText());
+
     }
 
-    private final int DELAY = 90;
+    private static final int DELAY = 80;
     private class GameTimer extends Timer {
 
         public GameTimer() {
             super(DELAY, e -> {
-                if (!snake.checkCollision()) {
-                    snake.move();
-                    if (snake.eatFood(food)) {
-                        food = new Food(snake);
-                    }
+                if (gameManager.isGameRunning()) {
+                    gameManager.gameLoop();
                     repaint();
                 }
                     });
@@ -71,25 +78,17 @@ public class SnakeGamePanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if ((cmd.equalsIgnoreCase("LeftArrow")) &&
-                    snake.getDirection().compatibleWith(Direction.LEFT))
-            {
-                snake.setDirection(Direction.LEFT);
+            if ((cmd.equalsIgnoreCase("LeftArrow"))) {
+                gameManager.moveSnakeLeft();
             }
-            else if (cmd.equalsIgnoreCase("RightArrow") &&
-                    snake.getDirection().compatibleWith(Direction.RIGHT))
-            {
-                snake.setDirection(Direction.RIGHT);
+            else if (cmd.equalsIgnoreCase("RightArrow")) {
+                gameManager.moveSnakeRight();
             }
-            else if (cmd.equalsIgnoreCase("UpArrow") &&
-                    snake.getDirection().compatibleWith(Direction.UP))
-            {
-                snake.setDirection(Direction.UP);
+            else if (cmd.equalsIgnoreCase("UpArrow")) {
+                gameManager.moveSnakeUp();
             }
-            else if (cmd.equalsIgnoreCase("DownArrow") &&
-                    snake.getDirection().compatibleWith(Direction.DOWN))
-            {
-                snake.setDirection(Direction.DOWN);
+            else if (cmd.equalsIgnoreCase("DownArrow")) {
+                gameManager.moveSnakeDown();
             }
         }
     }

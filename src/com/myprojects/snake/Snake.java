@@ -8,21 +8,23 @@ import java.util.List;
 public class Snake {
 
     private List<Point> body;
-
     private Direction direction;
-
     private Point tailTip;
 
 
     public Snake() {
         body = new ArrayList<>();
+        initBody();
+        direction = Direction.RIGHT;
+        tailTip = new Point();
+
+    }
+
+    private void initBody() {
         int midX = Board.X_FIELDS/2;
         int midY = Board.Y_FIELDS/2;
         body.add(new Point(midX, midY));
         body.add(new Point(midX + 1, midY));
-        direction = Direction.RIGHT;
-        tailTip = new Point();
-
     }
 
     public List<Point> getBody() {
@@ -45,16 +47,17 @@ public class Snake {
         return body.size();
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setDirection(Direction newDirection) {
+        if (direction.compatibleWith(newDirection))
+            direction = newDirection;
     }
 
 
-    public void draw(Graphics graphics) {
+    public void draw(Graphics2D graphics) {
         graphics.setColor(new Color (3, 45, 3));
         for (var point : getTail()) {
-            graphics.fillOval(point.x * Board.CELL_SIZE, point.y * Board.CELL_SIZE,
-                    Board.CELL_SIZE, Board.CELL_SIZE);
+            graphics.fillRoundRect(point.x * Board.CELL_SIZE, point.y * Board.CELL_SIZE,
+                    Board.CELL_SIZE, Board.CELL_SIZE, 12,12);
         }
         graphics.setColor(new Color (8, 130, 8));
         graphics.fillOval(getHead().x * Board.CELL_SIZE, getHead().y * Board.CELL_SIZE,
@@ -77,23 +80,7 @@ public class Snake {
     }
 
 
-    public boolean checkCollision() {
-        var head = getHead();
-        List<Point> tail = getTail();
-        for (Point part : tail) {
-            if (head.equals(part)) {
-                return true;
-            }
-        }
-        return head.x == 0 || head.x == Board.X_FIELDS - 1 || head.y == 0 || head.y == Board.Y_FIELDS - 1;
-    }
-
-
-    public boolean eatFood(Food food) {
-        if (getHead().equals(food)) {
-            body.add(new Point(tailTip));
-            return true;
-        }
-        return false;
+    public void extend() {
+        body.add(new Point(tailTip));
     }
 }

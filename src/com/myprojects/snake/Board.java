@@ -23,8 +23,8 @@ public class Board {
         }
     }
 
-    private static void drawWalls(Graphics g){
-        g.setColor(new Color(100, 159, 189));
+    private static void drawWalls(Graphics2D g){
+        g.setColor(new Color(141, 142, 144, 104));
         g.fillRect(0, 0, WIDTH, CELL_SIZE);     //North wall
         g.fillRect(0, HEIGHT - CELL_SIZE, WIDTH, CELL_SIZE);    //South wall
         g.fillRect(0, CELL_SIZE, CELL_SIZE, HEIGHT - 2 * CELL_SIZE);     //West wall
@@ -33,5 +33,6 @@ public class Board {
 
     public static void draw(Graphics2D g) {
         g.drawImage(background,0, 0, WIDTH, HEIGHT, null);
+        drawWalls(g);
     }
 }

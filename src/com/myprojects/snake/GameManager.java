@@ -20,10 +20,10 @@ public class GameManager {
 
     private boolean checkCollisionWithBounds() {
         var head = snake.getHead();
-        return  head.x < 0  ||
-                head.x == Board.X_FIELDS ||
-                head.y < 0 ||
-                head.y == Board.Y_FIELDS;
+        return  head.x == 0  ||
+                head.x == Board.X_FIELDS - 1 ||
+                head.y == 0 ||
+                head.y == Board.Y_FIELDS - 1;
     }
 
     private boolean checkCollisionWithBody() {
@@ -56,7 +56,7 @@ public class GameManager {
         handleCollisions();
     }
 
-    public String setScoreText() {
+    public String getScoreText() {
         return "Score: " + snake.getSize();
     }
 

@@ -8,22 +8,49 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 
-public class SnakeGamePanel extends JPanel {
+public class SnakeGamePanel extends JPanel implements ActionListener {
 
     private GameManager gameManager = new GameManager();
     private JLabel score;
+    private static final int DELAY = 80;
+
 
 
     SnakeGamePanel() {
         setPreferredSize(new Dimension(Board.WIDTH, Board.HEIGHT));
         score = new JLabel("Score: ", SwingConstants.CENTER);
-        score.setFont(new Font(score.getFont().getName(), Font.ITALIC, 30));
-        add(score, BorderLayout.NORTH);
-        GameTimer timer = new GameTimer();
+        score.setFont(new Font(score.getFont().getName(), Font.BOLD, 20));
+        score.setForeground(Color.BLACK);
+        add(score);
+        Timer timer = new Timer(DELAY, this);
+        timer.setInitialDelay(1000);
         timer.start();
         addBindings();
     }
 
+
+    @Override
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        Graphics2D g2d = (Graphics2D)graphics;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        gameManager.renderGraphics(g2d);
+        score.setText(gameManager.getScoreText());
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (gameManager.isGameRunning()) {
+            gameManager.gameLoop();
+            repaint();
+        }
+    }
+
+    ///Key strokes handlers
 
     private void addBindings() {
         InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -41,31 +68,6 @@ public class SnakeGamePanel extends JPanel {
         actionMap.put("Space", new ArrowAction("Space"));
     }
 
-    @Override
-    protected void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        Graphics2D g2d = (Graphics2D)graphics;
-        g2d.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        gameManager.renderGraphics(g2d);
-        score.setText(gameManager.setScoreText());
-
-    }
-
-    private static final int DELAY = 80;
-    private class GameTimer extends Timer {
-
-        public GameTimer() {
-            super(DELAY, e -> {
-                if (gameManager.isGameRunning()) {
-                    gameManager.gameLoop();
-                    repaint();
-                }
-                    });
-        }
-    }
 
     private class ArrowAction extends AbstractAction implements ActionListener {
 

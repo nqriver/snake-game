@@ -9,14 +9,12 @@ public class Snake {
 
     private List<Point> body;
     private Direction direction;
-    private Point tailTip;
 
 
     public Snake() {
         body = new ArrayList<>();
         initBody();
         direction = Direction.RIGHT;
-        tailTip = new Point();
 
     }
 
@@ -59,14 +57,13 @@ public class Snake {
             graphics.fillRoundRect(point.x * Board.CELL_SIZE, point.y * Board.CELL_SIZE,
                     Board.CELL_SIZE, Board.CELL_SIZE, 12,12);
         }
-        graphics.setColor(new Color (8, 130, 8));
+        graphics.setColor(new Color (10, 87, 10));
         graphics.fillOval(getHead().x * Board.CELL_SIZE, getHead().y * Board.CELL_SIZE,
                 Board.CELL_SIZE, Board.CELL_SIZE);
     }
 
 
     void move() {
-        tailTip.setLocation(body.get(body.size()-1));
         for (int i = body.size()-1; i>0; i--) {
             body.get(i).setLocation(body.get(i-1));
         }
@@ -81,6 +78,7 @@ public class Snake {
 
 
     public void extend() {
-        body.add(new Point(tailTip));
+        Point last = (Point) body.get(body.size()-1).clone();
+        body.add(last);
     }
 }
